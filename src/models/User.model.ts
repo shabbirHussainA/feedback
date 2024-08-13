@@ -24,7 +24,7 @@ export interface User extends Document{
     verifyToken:string;
     verifyTokenExpiry:Date;
     isVerified:boolean;
-    isAcceptingMessage:true;
+    isAcceptingMessage:boolean;
     messages:Message[];
 
 }
