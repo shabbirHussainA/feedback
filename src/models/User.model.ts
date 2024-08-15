@@ -1,10 +1,11 @@
+//crating model for user 
 import mongoose,{Schema,Document} from "mongoose";
-
+// creating interface for Message which extends mongoose documents
 export interface Message extends Document{
     content: string;
     createdAt: Date
 }
-
+//message Schema
 const MessageSchema :Schema<Message> = new Schema({
     content:{
         type:String,
@@ -16,7 +17,7 @@ const MessageSchema :Schema<Message> = new Schema({
         default:Date.now
     }
 })
-
+// creating interface for user which extends mongoose documents
 export interface User extends Document{
     username:string;
     email:string;
@@ -28,7 +29,9 @@ export interface User extends Document{
     messages:Message[];
 
 }
+//regex for email
 const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+//userSchema
 const UserSchema :Schema<User> = new Schema({
     username:{
         type:String,
@@ -62,7 +65,8 @@ const UserSchema :Schema<User> = new Schema({
         type:Boolean,
         default:true
     },
-    messages:[MessageSchema]
+    messages:[MessageSchema] // accepting array of MessageSchema 
 })
+// since the nextjs runs on the edge time we have to check weather the db is connected or not if it is not connected than only connection is created
 const UserModal = (mongoose.models.User as mongoose.Model<User>) || (mongoose.model<User>("User",UserSchema))
 export default UserModal

@@ -1,3 +1,4 @@
+//creating types for ApiResponse
 import { Message } from "@/models/User.model";
 
 export default interface ApiResponse{

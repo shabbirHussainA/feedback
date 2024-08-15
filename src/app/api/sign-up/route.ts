@@ -1,14 +1,11 @@
 import UserModal, { Message } from "@/models/User.model";
 import dbConnect from "@/lib/dbCOnnect";
-import { signUpValidation } from "@/schemas/signupSchema";
 import bcrypt from 'bcryptjs'
-import { NextRequest, NextResponse } from "next/server";
-import ApiResponse from "@/types/ApiResponse";
-import { VerificationEmail } from "../../../../emails/verificationEmail";
+import { NextRequest, NextResponse } from "next/server"; 
 import { SendVerificaationEmail } from "@/helpers/sendVerificationEmail";
 
 export async function POST(request:NextRequest) {
-    await dbConnect();
+    await dbConnect(); //connecting to the dB
     try {
         // getting data from the req
         const {username, email, password} = await request.json()
