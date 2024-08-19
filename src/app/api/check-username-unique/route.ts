@@ -25,7 +25,7 @@ export async function GET(request:NextRequest) {
         }
         //validate with zod
        const result =  UsernameQuerrySchema.safeParse(querryParam)
-       console.log(result)
+       console.log("result :", result )
        if(!result.success){
         const usernameError = result.error.format().username?._errors || []
         return Response.json({
@@ -39,12 +39,12 @@ export async function GET(request:NextRequest) {
         return Response.json({
             success: false,
             message: "username is already taken"
-        },{status:400})
+        },{status:200})
        }
        return Response.json({
-        success: false,
+        success: true,
         message: "username is unique"
-    },{status:400})
+    },{status:200})
     } catch (error) {
         console.error("Error Checking Username" , error)
         return Response.json(
