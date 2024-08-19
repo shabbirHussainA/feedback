@@ -7,7 +7,7 @@ const verifyCodeQuerrySchema = z.object({
     code:verifyValidation
 })
 
-export async function GET(request:NextRequest){
+export async function POST(request:NextRequest){
     await dbConnect();
     try {
         const {username, code} = await request.json()
@@ -24,8 +24,8 @@ export async function GET(request:NextRequest){
             )
         }
         const isCodeValid = user.verifyToken === code
-        const isCodeExpire =new Date(user.verifyToken) > new Date()
-        if(isCodeExpire && isCodeValid){
+        const isCodeNotExpire =new Date(user.verifyTokenExpiry) > new Date()
+        if(isCodeNotExpire && isCodeValid){
             user.isVerified = true
             await user.save()
             return Response.json(
@@ -34,7 +34,7 @@ export async function GET(request:NextRequest){
                     message:"Account verified successfully"
                 },{status:200}
             )
-        }else if(!isCodeExpire){
+        }else if(!isCodeNotExpire){
             return Response.json(
                 {
                     success:false,

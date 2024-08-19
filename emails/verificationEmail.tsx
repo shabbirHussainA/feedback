@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Html, Button,Head,Preview,Body,Font,Heading,Row,Section,Text } from "@react-email/components";
+import { Html,Head,Preview,Font,Heading,Row,Section,Text } from "@react-email/components";
 
 interface verificationEmailProps {
     OTP : string,

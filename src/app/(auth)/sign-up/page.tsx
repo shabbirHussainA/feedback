@@ -15,32 +15,42 @@ import { Input } from '@/components/ui/input'
 import { Loader2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 function page() {
+  // creating useState for managing the states
   const [username, setusername] = useState('')
   const [usernameMsg, setusernameMsg] = useState('')
   const [isCheckingUsername, setisCheckingUsername] = useState(false)
   const [isSubmitting, setisSubmitting] = useState(false)
+  // using debounce to pause the callback for 300ms so that api fetch could be minimized
   const debounceUsername = useDebounceCallback(setusername,300)
+  // using toast to show notification 
   const { toast } = useToast()
+  //creating router to route the page
   const router = useRouter()
+  //creating form
   const form = useForm<z.infer<typeof signUpValidation>>({
-    resolver: zodResolver(signUpValidation),
-    defaultValues:{
+    resolver: zodResolver(signUpValidation),//to valdate the format
+    defaultValues:{ //setting initial values
       username: '',
       email: '',
       password:'',
     }
   })
-  useEffect(() => {
-    const usernameCheck = async() =>{
-        if(username){
 
+  useEffect(() => {
+
+    const usernameCheck = async() =>{
+      // if username exist
+        if(username){
             setisCheckingUsername(true)
             setusernameMsg('')
             try {
+              // fetching the response 
              const response =await axios.get<ApiResponse>(`/api/check-username-unique?username=${username}`)
+            //  set the msg 
              setusernameMsg(response.data.message)
       
             } catch (error) {
+              // handling the error using the axiosError
              const AxiosError = error as AxiosError<ApiResponse>;
              setusernameMsg(AxiosError.response?.data.message ?? "error checking the uername")
             }finally{
@@ -49,7 +59,9 @@ function page() {
         }
     }
     usernameCheck();
-  }, [username])
+  }, [username]) //will run every time username will change
+
+  //creating onSubmit func to signup user
   const onSubmit = async (data:z.infer<typeof  signUpValidation>) => {
     setisSubmitting(true);
       try {
@@ -65,7 +77,7 @@ function page() {
           description: response.data?.message
         })
        }
-       router.replace(`/verify-code/${username}`)
+       router.replace(`/verify/${username}`)
        setisSubmitting(false);
         
       } catch (error) {
@@ -89,18 +101,18 @@ function page() {
           </h1>
           <p className="mb-4">Sign in to continue your secret conversations</p>
         </div>
-        <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-6'>
-            <FormField
-                  control={form.control}
+        <Form {...form}> //setting the resoler and default values
+            <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-6'> // for handling onSubmit
+            <FormField  // form field username
+                  control={form.control} // giving control to the form
                   name="username"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Username</FormLabel>
                       <FormControl>
                         <Input placeholder="shadcn" {...field} onChange={(e)=>{
-                          field.onChange(e)
-                          debounceUsername(e.target.value)
+                          field.onChange(e) //setting the field value
+                          debounceUsername(e.target.value) //updating the debounceUsername value
                         }} />
                       </FormControl> 
                       {isSubmitting && <Loader2 className='animate-spin'/>}
