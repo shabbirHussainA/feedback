@@ -20,16 +20,17 @@ export const authOptions:NextAuthOptions = {
                 try {
                   const user = await UserModal.findOne({
                         $or:[
-                            {username:credentials.identifier},{password:credentials.identifier}
+                            {username:credentials.identifier},{email:credentials.identifier}
                         ]
                     })
+                    console.log(user)
                     if(!user){
                         throw new Error("the user doesnot exist");
                     }
                    if(!user.isVerified){
                     throw new Error("please verify your account first");
                    }
-                   const ispasswordCorrect = await bcrypt.compare(user.password,credentials.password)
+                   const ispasswordCorrect = await bcrypt.compare(credentials.password,user.password)
                    if(ispasswordCorrect){
                     return user
                    }else{
